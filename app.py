@@ -54,35 +54,31 @@ def filter_errors_by_severity(errors, severities):
     filtered_errors = [error for error in errors if any(error.lower().startswith(severity) for severity in severities)]
     return filtered_errors
 def compare_csv_files(file1, file2):
-    try:
-        # Read the contents of both uploaded CSV files into DataFrames
-        previous_df = pd.read_csv(file1, encoding='utf-8')
-        current_df = pd.read_csv(file2, encoding='utf-8')
+    # Read the contents of both uploaded CSV files into dictionaries indexed by the Plugin ID
+    data1 = {}
+    data2 = {}
 
-        # Ensure both DataFrames have the expected columns
-        expected_columns = ["Plugin ID", "CVE", "Risk", "Host", "Protocol", "Port", "Name", "Synopsis", "Description", "Solution", "See Also", "Plugin Output"]
+    # Read and process the first file (file1)
+    file1_stream = TextIOWrapper(file1.stream, encoding='utf-8')
+    csv_reader1 = csv.DictReader(file1_stream)
 
-        for col in expected_columns:
-            if col not in previous_df.columns or col not in current_df.columns:
-                raise ValueError(f"Error: Column '{col}' not found in one or both CSV files.")
+    for row in csv_reader1:
+        plugin_id = row['Plugin ID']
+        data1[plugin_id] = row
 
-        # Define the key for merging (use "Plugin ID" instead of "Vulnerability Id")
-        merge_key = "Plugin ID"
+    # Read and process the second file (file2)
+    file2_stream = TextIOWrapper(file2.stream, encoding='utf-8')
+    csv_reader2 = csv.DictReader(file2_stream)
 
-        # Merge DataFrames using the specified key
-        merged_df = pd.merge(previous_df, current_df, on=merge_key, how="outer", suffixes=("_previous", "_current"))
+    for row in csv_reader2:
+        plugin_id = row['Plugin ID']
+        data2[plugin_id] = row
 
-        return merged_df
+    # Compare the two CSV files to find new and resolved errors
+    new_errors = [row for plugin_id, row in data2.items() if plugin_id not in data1]
+    resolved_errors = [row for plugin_id, row in data1.items() if plugin_id not in data2]
 
-    except Exception as e:
-        print(f"Error during CSV file comparison: {str(e)}")
-        raise ValueError("Error during CSV file comparison") from e
-
-try:
-    merged_df = compare_csv_files(file1, file2)
-    # Continue with the comparison process...
-except ValueError as e:
-    return f"Error: {str(e)}"
+    return new_errors, resolved_errors
 
 
 
@@ -256,28 +252,13 @@ def app3():
         file2 = request.files['file2']
 
         if file1 and file2:
-            try:
-                previous_df, current_df = compare_csv_files(file1, file2)
-
-                # Compare the two CSV files to find new and resolved errors
-                merged_df = pd.merge(previous_df, current_df, left_on="Plugin ID", right_on="Plugin ID", how="outer", suffixes=("_previous", "_current"))
-
-                new_errors = merged_df[merged_df["Severity_previous"].isna() & ~merged_df["Severity_current"].isna()]
-                resolved_errors = merged_df[~merged_df["Severity_previous"].isna() & merged_df["Severity_current"].isna()]
-
-                new_errors = new_errors.dropna(axis=1, how="all")
-                resolved_errors = resolved_errors.dropna(axis=1, how="all")
-
-                new_errors_count = len(new_errors)
-                resolved_errors_count = len(resolved_errors)
-
-                return render_template('app3_results.html', new_errors=new_errors, resolved_errors=resolved_errors,
-                                       new_errors_count=new_errors_count, resolved_errors_count=resolved_errors_count)
-            except ValueError as e:
-                return f"Error: {str(e)}"
-    
+            new_errors, resolved_errors = compare_csv_files(file1, file2)
+            new_errors_count = len(new_errors)
+            resolved_errors_count = len(resolved_errors)
+        
+        return render_template('app3_results.html', new_errors=new_errors, resolved_errors=resolved_errors,new_errors_count=new_errors_count,
+        resolved_errors_count=resolved_errors_count)
     return render_template('app3_upload.html')
-
 
 
 if __name__ == "__main__":
