@@ -59,16 +59,14 @@ def compare_csv_files(file1, file2):
     data2 = {}
 
     # Read and process the first file (file1)
-    file1_stream = TextIOWrapper(file1.stream, encoding='utf-8')
-    csv_reader1 = csv.DictReader(file1_stream)
+    csv_reader1 = csv.DictReader(file1)
 
     for row in csv_reader1:
         plugin_id = row['Plugin ID']
         data1[plugin_id] = row
 
     # Read and process the second file (file2)
-    file2_stream = TextIOWrapper(file2.stream, encoding='utf-8')
-    csv_reader2 = csv.DictReader(file2_stream)
+    csv_reader2 = csv.DictReader(file2)
 
     for row in csv_reader2:
         plugin_id = row['Plugin ID']
@@ -79,6 +77,7 @@ def compare_csv_files(file1, file2):
     resolved_errors = [row for plugin_id, row in data1.items() if plugin_id not in data2]
 
     return new_errors, resolved_errors
+
 
 
 
