@@ -55,24 +55,39 @@ def filter_errors_by_severity(errors, severities):
     return filtered_errors
 
 def compare_csv_files(file1, file2):
-    # Read the contents of both uploaded CSV files into DataFrames
-    previous_df = pd.read_csv(file1, encoding='utf-8')
-    current_df = pd.read_csv(file2, encoding='utf-8')
+    try:
+        # Read the contents of both uploaded CSV files into DataFrames
+        previous_df = pd.read_csv(file1, encoding='utf-8')
+        current_df = pd.read_csv(file2, encoding='utf-8')
 
-    # Ensure both DataFrames have the expected columns
-    expected_columns = ["Plugin ID", "CVE", "Risk", "Host", "Protocol", "Port", "Name", "Synopsis", "Description", "Solution", "See Also", "Plugin Output"]
+        # Ensure both DataFrames have the expected columns
+        expected_columns = ["Plugin ID", "CVE", "Risk", "Host", "Protocol", "Port", "Name", "Synopsis", "Description", "Solution", "See Also", "Plugin Output"]
 
-    for col in expected_columns:
-        if col not in previous_df.columns or col not in current_df.columns:
-            raise ValueError(f"Error: Column '{col}' not found in one or both CSV files.")
+        for col in expected_columns:
+            if col not in previous_df.columns or col not in current_df.columns:
+                raise ValueError(f"Error: Column '{col}' not found in one or both CSV files.")
 
-    # Define the key for merging (use "Plugin ID" instead of "Vulnerability Id")
-    merge_key = "Plugin ID"
+        # Define the key for merging (use "Plugin ID" instead of "Vulnerability Id")
+        merge_key = "Plugin ID"
 
-    # Merge DataFrames using the specified key
-    merged_df = pd.merge(previous_df, current_df, on=merge_key, how="outer", suffixes=("_previous", "_current"))
+        # Merge DataFrames using the specified key
+        merged_df = pd.merge(previous_df, current_df, on=merge_key, how="outer", suffixes=("_previous", "_current"))
 
-    return merged_df
+        return merged_df
+
+    except Exception as e:
+        print(f"Error during CSV file comparison: {str(e)}")
+        raise  # Re-raise the exception after printing the error message
+
+# ...
+
+# Example usage:
+try:
+    previous_df, current_df = compare_csv_files(file1, file2)
+    # Continue with the comparison process...
+except ValueError as e:
+    return f"Error: {str(e)}"
+
 
 
 
