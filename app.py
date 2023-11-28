@@ -53,7 +53,6 @@ def compare_text(previous_text, current_text):
 def filter_errors_by_severity(errors, severities):
     filtered_errors = [error for error in errors if any(error.lower().startswith(severity) for severity in severities)]
     return filtered_errors
-
 def compare_csv_files(file1, file2):
     try:
         # Read the contents of both uploaded CSV files into DataFrames
@@ -77,28 +76,10 @@ def compare_csv_files(file1, file2):
 
     except Exception as e:
         print(f"Error during CSV file comparison: {str(e)}")
-        raise  # Re-raise the exception after printing the error message
-
-# ...
-
-# Example usage:
-try:
-    previous_df, current_df = compare_csv_files(file1, file2)
-    print(f"previous_df columns: {previous_df.columns}")
-    print(f"current_df columns: {current_df.columns}")
-    # Continue with the comparison process...
-except ValueError as e:
-    return f"Error: {str(e)}"
+        raise ValueError("Error during CSV file comparison") from e
 
 
-# ...
-
-# Example usage:
-# try:
-#     previous_df, current_df = compare_csv_files(file1, file2)
-#     # Continue with the comparison process...
-# except ValueError as e:
-#     return f"Error: {str(e)}"
+   
 
 
 
