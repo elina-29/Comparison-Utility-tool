@@ -53,20 +53,23 @@ def compare_text(previous_text, current_text):
 def filter_errors_by_severity(errors, severities):
     filtered_errors = [error for error in errors if any(error.lower().startswith(severity) for severity in severities)]
     return filtered_errors
+
 def compare_csv_files(file1, file2):
     # Read the contents of both uploaded CSV files into dictionaries indexed by the Plugin ID
     data1 = {}
     data2 = {}
 
     # Read and process the first file (file1)
-    csv_reader1 = csv.DictReader(file1)
+    file1_stream = TextIOWrapper(file1, encoding='utf-8')
+    csv_reader1 = csv.DictReader(file1_stream)
 
     for row in csv_reader1:
         plugin_id = row['Plugin ID']
         data1[plugin_id] = row
 
     # Read and process the second file (file2)
-    csv_reader2 = csv.DictReader(file2)
+    file2_stream = TextIOWrapper(file2, encoding='utf-8')
+    csv_reader2 = csv.DictReader(file2_stream)
 
     for row in csv_reader2:
         plugin_id = row['Plugin ID']
@@ -77,6 +80,7 @@ def compare_csv_files(file1, file2):
     resolved_errors = [row for plugin_id, row in data1.items() if plugin_id not in data2]
 
     return new_errors, resolved_errors
+
 
 
 
