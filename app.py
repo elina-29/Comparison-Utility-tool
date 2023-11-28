@@ -233,7 +233,7 @@ def app2():
         # )
     return render_template("app2_index.html")
 
-@app.route("/app3", methods=["POST"])
+@app.route("/app3", methods=["GET", "POST"])
 def app3():
     if request.method == "POST":
         file1 = request.files['file1']
