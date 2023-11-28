@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comparison Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        h2 {
+            background-color: #f5f5f5;
+/*            color: #fff;*/
+            padding: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        p {
+            margin: 10px;
+            padding: 5px;
+/*            background-color: #e5e5e5;*/
+        }
+        .home-button {
+            position:relative;
+ left:1300px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.home-button:hover {
+    background-color: #555;
+}
+.back-button {
+    margin-left:30px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+    </style>
+</head>
+<body>
+    <h1>Comparison Results</h1>
+
+<a href="{{ url_for('app3') }}" class="back-button">Back</a>
+<a href="{{ url_for('index') }}" class="home-button">Home</a>
+    <h2>New Vulnerabilities - Total: {{ new_errors_count }}</h2>
+    {% if new_errors %}
+        <table>
+            <thead>
+                <tr>
+                    {% for column, _ in new_errors[0].items() if column not in ['See Also', 'Plugin Output'] %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in new_errors %}
+                    <tr>
+                        {% for column, value in row.items() if column not in ['See Also', 'Plugin Output'] %}
+                            <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No new vulnerabilities.</p>
+    {% endif %}
+
+    <h2>Resolved Vulnerabilities - Total: {{ resolved_errors_count }}</h2>
+    {% if resolved_errors %}
+        <table>
+            <thead>
+                <tr>
+                    {% for column, _ in resolved_errors[0].items() if column not in ['See Also', 'Plugin Output'] %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in resolved_errors %}
+                    <tr>
+                        {% for column, value in row.items() if column not in ['See Also', 'Plugin Output'] %}
+                            <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No resolved vulnerabilities.</p>
+    {% endif %}
+</body>
+</html>

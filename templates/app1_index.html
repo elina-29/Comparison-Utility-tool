@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Comparison</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app1_style.css') }}"> -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            width: 300px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        .critical-text {
+    color:#d40816;
+}
+.high-text{
+    color:orangered;
+}
+.medium-text{
+    color:#f0c60a;
+}
+
+.low-text {
+    color: green;
+}
+
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        input[type="submit"] {
+            position:relative;
+            left:110px;
+            heigh:38px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+          .back-button {
+/*    margin-left:30px;*/
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+
+
+
+    </style>
+
+</head>
+<body>
+    <h1>File Comparison</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="previous_file">Upload Previous File:</label>
+        <input type="file" name="previous_file">
+        
+        <label for="current_file">Upload Current File:</label>
+        <input type="file" name="current_file">
+       
+        <!-- <p>Supported file formats: PDF, HTML</p> -->
+        <a href="{{ url_for('index') }}" class="back-button">Home</a>
+        
+        <input type="submit" value="Compare" style="height:38px;">
+
+        
+            </form>
+   
+{% if new_errors %}
+    <h2>New Vulnerabilities - Total: {{ new_errors_count }}</h2>
+    <ul>
+    {% set unique_new_errors = [] %}
+    {% for error in new_errors %}
+        <li>
+            {% set words = error.split() %}
+            {% for word in words %}
+                {% if "critical" in word|lower %}
+                    <span class="critical-text"><strong>{{ word|upper }}</strong></span>
+                {% elif "high" in word|lower %}
+                    <span class="high-text"><strong>{{ word|upper }}</strong></span>
+                {% elif "medium" in word|lower %}
+                    <span class="medium-text"><strong>{{ word|upper }}</strong></span>
+                {% elif "low" in word|lower %}
+                    <span class="low-text"><strong>{{ word|upper }}</strong></span>
+                {% else %}
+                    {{ word }}
+                {% endif %}
+                <!-- {% if not loop.last %} {# Add a space unless it's the last word #}
+                    &nbsp;
+                {% endif %} -->
+            {% endfor %}
+        </li>
+        {% set _ = unique_new_errors.append(error) %}
+    {% endfor %}
+</ul>
+
+
+    {% endif %}
+
+
+{% if resolved_errors %}
+<h2>Resolved Vulnerabilities - Total: {{ resolved_errors_count }}</h2>
+<ul>
+    {% set unique_resolved_errors = [] %}
+    {% for error in resolved_errors %}
+        {% if error not in unique_resolved_errors %}
+            <li>
+            {% set words = error.split() %}
+            {% for word in words %}
+                {% if "critical" in word|lower %}
+                    <span class="critical-text"><strong>{{ word|upper }}</strong></span>
+                {% elif "high" in word|lower %}
+                    <span class="high-text"><strong>{{ word|upper }}</strong></span>
+                {% elif "medium" in word|lower %}
+                    <span class="medium-text"><strong>{{ word|upper }}</strong></span>
+                {% elif "low" in word|lower %}
+                    <span class="low-text"><strong>{{ word|upper }}</strong></span>
+                {% else %}
+                    {{ word }}
+                {% endif %}
+                <!-- {% if not loop.last %} 
+                    &nbsp;
+                {% endif %} -->
+            {% endfor %}
+        </li>
+            {% set _ = unique_resolved_errors.append(error) %}
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endif %}
+
+   
+{% if not new_errors %}
+<p class="message">No new vulnerabilities found.</p>
+{% endif %}
+
+{% if not resolved_errors %}
+<p class="message">No resolved vulnerabilities found.</p>
+{% endif %}
+
+{% if info_lines %}
+<h2>Info:</h2>
+<ul>
+    {% for line in info_lines %}
+    <li>{{ line }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<!-- <a href="{{ url_for('index') }}" class="back-button">Back to Toggle Menu</a> -->
+
+
+</body>
+</html>

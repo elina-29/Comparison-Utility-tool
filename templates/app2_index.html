@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vulnerability Comparison</title>
+     <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app2_style.css') }}"> -->
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            width: 300px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+       input[type="submit"] {
+            position:relative;
+            left:110px;
+            heigh:38px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        .back-button {
+/*    margin-left:30px;*/
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.back-button:hover {
+    background-color: #555;
+}  
+</style>
+
+</head>
+<body>
+    <h1>Vulnerability Comparison</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="previous_file">Upload Previous Report:</label>
+        <input type="file" name="previous_file" accept=".xlsx" required>
+        <br>
+        <label for="current_file">Upload Current Report:</label>
+        <input type="file" name="current_file" accept=".xlsx" required>
+        <br>
+        <a href="{{ url_for('index') }}" class="back-button">Home</a>
+        <input type="submit" value="Compare" style="height:38px;">
+    </form>
+   
+</body>
+</html>

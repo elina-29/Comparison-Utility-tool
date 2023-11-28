@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toggle Menu</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        h3{
+
+
+        color:#0096FF;
+    }
+    </style>
+
+</head>
+<body>
+    <h1>Choose a File Extension to Compare:</h1>
+    <form method="POST">
+        <input type="radio" name="file_extension" value="pdf"> .pdf
+        <input type="radio" name="file_extension" value="html">.html
+        <input type="radio" name="file_extension" value="xls"> .xls
+        <input type="radio" name="file_extension" value="csv"> .csv
+        <br><input type="submit" value="Submit">
+    </form>
+    <br>
+    <h3>Note: This tool is used to compare vulnerability reports from Security Tools only</h3>
+</body>
+</html>

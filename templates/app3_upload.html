@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV File Comparison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            width: 300px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        input[type="submit"] {
+            position:relative;
+            left:110px;
+            heigh:38px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+        .back-button {
+/*    margin-left:30px;*/
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+    </style>
+</head>
+<body>
+    <h1>Compare CSV Files</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="file1">Upload CSV File 1:</label>
+        <input type="file" name="file1" accept=".csv" required><br>
+        <label for="file2">Upload CSV File 2:</label>
+        <input type="file" name="file2" accept=".csv" required><br>
+        <a href="{{ url_for('index') }}" class="back-button">Home</a>
+        <input type="submit" value="Compare" style="height:38px;">
+    </form>
+    
+</body>
+</html>

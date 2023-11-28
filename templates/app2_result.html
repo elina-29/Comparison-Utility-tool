@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comparison Result</title>
+     <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app2_style.css') }}"> -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+        }
+
+        h2 {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        p {
+            padding: 10px;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .home-button {
+   position:relative;
+ left:1300px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.home-button:hover {
+    background-color: #555;
+}
+.back-button {
+    margin-left:30px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+
+.critical{
+    color:#d40816;
+}
+.high{
+     color:orangered;
+}
+.medium{
+     color:#f0c60a;
+}
+.low{
+    color:#2E8B57;
+}
+
+.new-error-display{
+    margin-left:10px;
+}
+.resolved-color{
+    color:#355E3B;
+}
+.resolved-error-display{
+    position:relative;
+    left:800px;
+    bottom:227px;
+}
+.subs{
+    position:relative;
+    left:30px;
+}
+.table-body{
+    position:relative;
+    bottom:200px;
+}
+
+    </style>
+
+
+</head>
+<body>
+    <h1>Comparison Result</h1>
+    <a href="{{ url_for('app2') }}" class="back-button">Back</a>
+    <a href="{{ url_for('index') }}" class="home-button">Home</a>
+    
+    <div class="new-error-display">
+
+    <h2>Total Number of New Vulnerabilities: {{ total_new_errors }}</h2>
+    <div class="subs">
+
+    <h4>Critical Vulnerabilities: <span class="critical">{{ new_critical_errors }}</span></h4>
+
+    <h4>High Vulnerabilities: <span class="high">{{ new_high_errors }}</span></h4>
+
+    <h4>Medium Vulnerabilities:<span class="medium"> {{ new_medium_errors }}</span></h4>
+
+    <h4> Low Vulnerabilities: <span class="low">{{ new_low_errors }}</span></h4>
+</div>
+</div>
+<div class="resolved-error-display">
+
+    <h2>Total Number of Resolved Vulnerabilities:<span class="resolved-color"> {{ total_resolved_errors }}</span></h2>
+    <div class="subs">
+
+    <h4>No. of Resolved Critical Vulnerabilities: {{ resolved_critical_errors }}</h4>
+
+    <h4>No. of Resolved High Vulnerabilities: {{ resolved_high_errors }}</h4>
+
+    <h4>No. of Resolved Medium Vulnerabilities: {{ resolved_medium_errors }}</h4>
+
+    <h4>No. of Resolved Low Vulnerabilities: {{ resolved_low_errors }}</h4>
+</div>
+</div>
+<div class="table-body">
+<h2>New Vulnerabilities:</h2>
+{% if new_errors.empty %}
+    <p>{{ new_errors_message }}</p>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                {% for column in new_errors.columns  %}
+                {% if column not in ['GroupId_current', 'Type_current','CVSS 2_current','Confidentiality Impact_current','Attack Complexity_current','Scope_current','Attack Vector_current','Availability Impact_current','Integrity Impact_current','Privileges Required_current','User Interaction_current','Published_current','Modified_current','Locations_current','Unnamed: 28_current'] %}
+                    <th>{{ column }}</th>
+                {% endif %}
+
+
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, row in new_errors.iterrows() %}
+                <tr>
+                    {% for column in new_errors.columns if column not in ['GroupId_current', 'Type_current','CVSS 2_current','Confidentiality Impact_current','Attack Complexity_current','Scope_current','Attack Vector_current','Availability Impact_current','Integrity Impact_current','Privileges Required_current','User Interaction_current','Published_current','Modified_current','Locations_current','Unnamed: 28_current'] %}
+                        <td>{{ row[column] }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+ 
+<!--     <h3>Total Number of New Errors: {{ total_new_errors }}</h3>
+
+    
+    <h4>Number of New Critical Errors: {{ new_critical_errors }}</h4>
+
+    
+    <h4>Number of New High Errors: {{ new_high_errors }}</h4>
+
+    
+    <h4>Number of New Medium Errors: {{ new_medium_errors }}</h4>
+
+
+    <h4>Number of New Low Errors: {{ new_low_errors }}</h4>
+ -->
+
+
+    <h2>Resolved Vulnerabilities:</h2>
+    {% if resolved_errors.empty %}
+        <p>{{ resolved_errors_message }}</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    {% for column in resolved_errors.columns %}
+                    {% if column not in ['GroupId_previous', 'Type_previous','CVSS 2_previous','Confidentiality Impact_previous','Attack Complexity_previous','Scope_previous','Attack Vector_previous','Availability Impact_previous','Integrity Impact_previous','Privileges Required_previous','User Interaction_previous','Published_previous','Modified_previous','Locations_previous','Unnamed: 28_previous'] %}
+                        <th>{{ column }}</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, row in resolved_errors.iterrows() %}
+                    <tr>
+                        {% for column in resolved_errors.columns %}
+                        {% if column not in ['GroupId_previous', 'Type_previous','CVSS 2_previous','Confidentiality Impact_previous','Attack Complexity_previous','Scope_previous','Attack Vector_previous','Availability Impact_previous','Integrity Impact_previous','Privileges Required_previous','User Interaction_previous','Published_previous','Modified_previous','Locations_previous','Unnamed: 28_previous'] %}
+                            <td>{{ row[column] }}</td>
+                            {% endif %}
+                        {% endfor %} 
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+
+<!-- 
+    <h3>Total Number of Resolved Errors: {{ total_resolved_errors }}</h3>
+
+
+    <h4>Number of Resolved Critical Errors: {{ resolved_critical_errors }}</h4>
+
+
+    <h4>Number of Resolved High Errors: {{ resolved_high_errors }}</h4>
+
+
+    <h4>Number of Resolved Medium Errors: {{ resolved_medium_errors }}</h4>
+
+
+    <h4>Number of Resolved Low Errors: {{ resolved_low_errors }}</h4> -->
+
+    
+</body>
+</html>
