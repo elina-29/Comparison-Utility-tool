@@ -62,10 +62,12 @@ def compare_csv_files(file1, file2):
     # Ensure both DataFrames have the expected columns
     expected_columns = ["Plugin ID", "CVE", "Risk", "Host", "Protocol", "Port", "Name", "Synopsis", "Description", "Solution", "See Also", "Plugin Output"]
 
-    if not set(expected_columns).issubset(previous_df.columns) or not set(expected_columns).issubset(current_df.columns):
-        raise ValueError("Error: Column names in CSV files are not as expected.")
+    for col in expected_columns:
+        if col not in previous_df.columns or col not in current_df.columns:
+            raise ValueError(f"Error: Column '{col}' not found in one or both CSV files.")
 
     return previous_df, current_df
+
 
 
 
