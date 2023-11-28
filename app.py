@@ -60,12 +60,13 @@ def compare_csv_files(file1, file2):
     current_df = pd.read_csv(file2, encoding='utf-8')
 
     # Ensure both DataFrames have the expected columns
-    expected_columns = ["Vulnerability Id", "Severity"]
+    expected_columns = ["Plugin ID", "CVE", "Risk", "Host", "Protocol", "Port", "Name", "Synopsis", "Description", "Solution", "See Also", "Plugin Output"]
 
     if not set(expected_columns).issubset(previous_df.columns) or not set(expected_columns).issubset(current_df.columns):
         raise ValueError("Error: Column names in CSV files are not as expected.")
 
     return previous_df, current_df
+
 
 
 
