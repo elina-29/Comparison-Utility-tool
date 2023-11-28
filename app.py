@@ -63,9 +63,10 @@ def compare_csv_files(file1, file2):
     expected_columns = ["Vulnerability Id", "Severity"]
 
     if not set(expected_columns).issubset(previous_df.columns) or not set(expected_columns).issubset(current_df.columns):
-        return "Error: Column names in CSV files are not as expected."
+        raise ValueError("Error: Column names in CSV files are not as expected.")
 
     return previous_df, current_df
+
 
 
 
@@ -231,31 +232,35 @@ def app2():
         # )
     return render_template("app2_index.html")
 
-@app.route("/app3", methods=["GET", "POST"])
+@app.route("/app3", methods=["POST"])
 def app3():
     if request.method == "POST":
         file1 = request.files['file1']
         file2 = request.files['file2']
 
         if file1 and file2:
-            previous_df, current_df = compare_csv_files(file1, file2)
+            try:
+                previous_df, current_df = compare_csv_files(file1, file2)
 
-            # Compare the two CSV files to find new and resolved errors
-            merged_df = pd.merge(previous_df, current_df, on="Vulnerability Id", how="outer", suffixes=("_previous", "_current"))
+                # Compare the two CSV files to find new and resolved errors
+                merged_df = pd.merge(previous_df, current_df, on="Vulnerability Id", how="outer", suffixes=("_previous", "_current"))
 
-            new_errors = merged_df[merged_df["Severity_previous"].isna() & ~merged_df["Severity_current"].isna()]
-            resolved_errors = merged_df[~merged_df["Severity_previous"].isna() & merged_df["Severity_current"].isna()]
+                new_errors = merged_df[merged_df["Severity_previous"].isna() & ~merged_df["Severity_current"].isna()]
+                resolved_errors = merged_df[~merged_df["Severity_previous"].isna() & merged_df["Severity_current"].isna()]
 
-            new_errors = new_errors.dropna(axis=1, how="all")
-            resolved_errors = resolved_errors.dropna(axis=1, how="all")
+                new_errors = new_errors.dropna(axis=1, how="all")
+                resolved_errors = resolved_errors.dropna(axis=1, how="all")
 
-            new_errors_count = len(new_errors)
-            resolved_errors_count = len(resolved_errors)
+                new_errors_count = len(new_errors)
+                resolved_errors_count = len(resolved_errors)
 
-            return render_template('app3_results.html', new_errors=new_errors, resolved_errors=resolved_errors,
-                                   new_errors_count=new_errors_count, resolved_errors_count=resolved_errors_count)
-        
+                return render_template('app3_results.html', new_errors=new_errors, resolved_errors=resolved_errors,
+                                       new_errors_count=new_errors_count, resolved_errors_count=resolved_errors_count)
+            except ValueError as e:
+                return f"Error: {str(e)}"
+    
     return render_template('app3_upload.html')
+
 
 
 if __name__ == "__main__":
