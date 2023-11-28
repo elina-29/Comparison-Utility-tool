@@ -82,11 +82,11 @@ def compare_csv_files(file1, file2):
 # ...
 
 # Example usage:
-try:
-    previous_df, current_df = compare_csv_files(file1, file2)
-    # Continue with the comparison process...
-except ValueError as e:
-    return f"Error: {str(e)}"
+# try:
+#     previous_df, current_df = compare_csv_files(file1, file2)
+#     # Continue with the comparison process...
+# except ValueError as e:
+#     return f"Error: {str(e)}"
 
 
 
