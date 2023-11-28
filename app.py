@@ -82,6 +82,18 @@ def compare_csv_files(file1, file2):
 # ...
 
 # Example usage:
+try:
+    previous_df, current_df = compare_csv_files(file1, file2)
+    print(f"previous_df columns: {previous_df.columns}")
+    print(f"current_df columns: {current_df.columns}")
+    # Continue with the comparison process...
+except ValueError as e:
+    return f"Error: {str(e)}"
+
+
+# ...
+
+# Example usage:
 # try:
 #     previous_df, current_df = compare_csv_files(file1, file2)
 #     # Continue with the comparison process...
