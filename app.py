@@ -55,35 +55,27 @@ def filter_errors_by_severity(errors, severities):
     return filtered_errors
 
 def compare_csv_files(file1, file2):
-    # Read the contents of both uploaded CSV files into dictionaries indexed by the Plugin ID
-    data1 = {}
-    data2 = {}
+    # Read the contents of both uploaded CSV files into DataFrames
+    previous_df = pd.read_csv(file1, encoding='utf-8')
+    current_df = pd.read_csv(file2, encoding='utf-8')
 
-    # Read and process the first file (file1)
-    if not isinstance(file1.stream, io.TextIOBase):
-        file1.stream = io.TextIOWrapper(file1.stream, encoding='utf-8')
+    # Ensure both DataFrames have the expected columns
+    expected_columns = ["Vulnerability Id", "Severity"]
 
-    csv_reader1 = csv.DictReader(file1.stream)
-
-    for row in csv_reader1:
-        plugin_id = row['Plugin ID']
-        data1[plugin_id] = row
-
-    # Read and process the second file (file2)
-    if not isinstance(file2.stream, io.TextIOBase):
-        file2.stream = io.TextIOWrapper(file2.stream, encoding='utf-8')
-
-    csv_reader2 = csv.DictReader(file2.stream)
-
-    for row in csv_reader2:
-        plugin_id = row['Plugin ID']
-        data2[plugin_id] = row
+    if not set(expected_columns).issubset(previous_df.columns) or not set(expected_columns).issubset(current_df.columns):
+        return "Error: Column names in CSV files are not as expected."
 
     # Compare the two CSV files to find new and resolved errors
-    new_errors = [row for plugin_id, row in data2.items() if plugin_id not in data1]
-    resolved_errors = [row for plugin_id, row in data1.items() if plugin_id not in data2]
+    merged_df = pd.merge(previous_df, current_df, on="Vulnerability Id", how="outer", suffixes=("_previous", "_current"))
+
+    new_errors = merged_df[merged_df["Severity_previous"].isna() & ~merged_df["Severity_current"].isna()]
+    resolved_errors = merged_df[~merged_df["Severity_previous"].isna() & merged_df["Severity_current"].isna()]
+
+    new_errors = new_errors.dropna(axis=1, how="all")
+    resolved_errors = resolved_errors.dropna(axis=1, how="all")
 
     return new_errors, resolved_errors
+
 
 
 
