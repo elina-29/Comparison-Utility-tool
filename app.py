@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
-from PyPDF2.pdf import PdfReader
+from PyPDF2 import PdfFileReader
 import pandas as pd
 from bs4 import BeautifulSoup
 import io
