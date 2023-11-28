@@ -78,12 +78,11 @@ def compare_csv_files(file1, file2):
         print(f"Error during CSV file comparison: {str(e)}")
         raise ValueError("Error during CSV file comparison") from e
 
-
-   
-
-
-
-
+try:
+    merged_df = compare_csv_files(file1, file2)
+    # Continue with the comparison process...
+except ValueError as e:
+    return f"Error: {str(e)}"
 
 
 
