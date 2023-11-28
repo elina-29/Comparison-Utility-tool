@@ -60,7 +60,11 @@ def compare_csv_files(file1, file2):
     data2 = {}
 
     # Read and process the first file (file1)
-    file1_stream = TextIOWrapper(file1.stream, encoding='utf-8')
+    if isinstance(file1.stream, io.TextIOBase):
+        file1_stream = file1.stream
+    else:
+        file1_stream = io.TextIOWrapper(file1.stream, encoding='utf-8')
+
     csv_reader1 = csv.DictReader(file1_stream)
 
     for row in csv_reader1:
@@ -68,7 +72,11 @@ def compare_csv_files(file1, file2):
         data1[plugin_id] = row
 
     # Read and process the second file (file2)
-    file2_stream = TextIOWrapper(file2.stream, encoding='utf-8')
+    if isinstance(file2.stream, io.TextIOBase):
+        file2_stream = file2.stream
+    else:
+        file2_stream = io.TextIOWrapper(file2.stream, encoding='utf-8')
+
     csv_reader2 = csv.DictReader(file2_stream)
 
     for row in csv_reader2:
@@ -80,6 +88,7 @@ def compare_csv_files(file1, file2):
     resolved_errors = [row for plugin_id, row in data1.items() if plugin_id not in data2]
 
     return new_errors, resolved_errors
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
