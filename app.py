@@ -66,7 +66,14 @@ def compare_csv_files(file1, file2):
         if col not in previous_df.columns or col not in current_df.columns:
             raise ValueError(f"Error: Column '{col}' not found in one or both CSV files.")
 
-    return previous_df, current_df
+    # Define the key for merging (use "Plugin ID" instead of "Vulnerability Id")
+    merge_key = "Plugin ID"
+
+    # Merge DataFrames using the specified key
+    merged_df = pd.merge(previous_df, current_df, on=merge_key, how="outer", suffixes=("_previous", "_current"))
+
+    return merged_df
+
 
 
 
