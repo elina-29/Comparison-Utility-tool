@@ -246,7 +246,7 @@ def app3():
                 previous_df, current_df = compare_csv_files(file1, file2)
 
                 # Compare the two CSV files to find new and resolved errors
-                merged_df = pd.merge(previous_df, current_df, on="Vulnerability Id", how="outer", suffixes=("_previous", "_current"))
+                merged_df = pd.merge(previous_df, current_df, left_on="Plugin ID", right_on="Plugin ID", how="outer", suffixes=("_previous", "_current"))
 
                 new_errors = merged_df[merged_df["Severity_previous"].isna() & ~merged_df["Severity_current"].isna()]
                 resolved_errors = merged_df[~merged_df["Severity_previous"].isna() & merged_df["Severity_current"].isna()]
